@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+/* Reset minimal */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 14px; font-weight: 400; color: #191818; background: #FBFAF9;
+  line-height: 1.5; min-height: 100vh; overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+ul, ol { list-style: none; }
+button { cursor: pointer; font-family: inherit; background: none; border: none; outline: none; }
+input, textarea, select { font-family: inherit; outline: none; }
+img, svg { display: block; max-width: 100%; }
+
+/* Headings — Manrope */
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Manrope", "Inter", sans-serif;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #191818;
+}
+.page-header__title,
+.project-detail__title,
+.list-container__title,
+.project-tasks__title,
+.modal__title,
+.auth-page__title {
+  font-family: "Manrope", "Inter", sans-serif;
+}
+
+/* Skip link */
+.skip-link {
+  position: absolute; top: -100px; left: 16px;
+  background: #1F1F1F; color: #fff; padding: 8px 16px;
+  border-radius: 8px; z-index: 999; font-size: 14px; transition: top 0.2s;
+}
+.skip-link:focus { top: 8px; }
+
+/* Spinner */
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid #E8EAED; border-top-color: #D3580B;
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+  margin: 60px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: #1F1F1F; color: #fff; padding: 12px 20px;
+  border-radius: 10px; font-size: 13px; font-weight: 500;
+  z-index: 9999; animation: slideUp 0.3s ease; max-width: 400px;
+}
+.toast--error { background: #EF4444; }
+.toast--success { background: #16A34A; }
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Dropdown menu (avatar user) */
+.dropdown-menu {
+  position: absolute; top: 48px; right: 0; z-index: 200;
+  background: #fff; border: 1px solid #E5E7EB; border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12); min-width: 200px; overflow: hidden;
+}
+.dropdown-menu__header {
+  padding: 14px 16px; border-bottom: 1px solid #F3F4F6;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.dropdown-menu__header strong { font-size: 13px; color: #191818; }
+.dropdown-menu__header span { font-size: 12px; color: #9CA3AF; }
+.dropdown-menu__item {
+  display: block; width: 100%; padding: 10px 16px; font-size: 13px;
+  color: #4B5563; cursor: pointer; transition: background 0.1s;
+  text-align: left; background: none; border: none; font-family: inherit;
+}
+.dropdown-menu__item:hover { background: #F9FAFB; }
+.dropdown-menu__item--danger { color: #EF4444; }
+.dropdown-menu__item--danger:hover { background: #FEF2F2; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .navbar { padding: 0 16px; }
+  .navbar__center { display: none; }
+  .main-content { padding: 20px 16px; }
+  .page-header { flex-direction: column; gap: 16px; align-items: flex-start; }
+  .page-header__actions { width: 100%; }
+  .page-header__actions .btn { width: 100%; justify-content: center; }
+  .kanban-board { grid-template-columns: 1fr !important; }
+  .projects-grid { grid-template-columns: 1fr !important; }
+  .project-detail__header { flex-wrap: wrap; gap: 12px; }
+  .project-detail__actions { width: 100%; flex-wrap: wrap; }
+  .project-tasks__toolbar { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .contributors-bar { flex-direction: column; gap: 8px; align-items: flex-start; }
+  .contributors-bar__members { flex-wrap: wrap; }
+  .auth-page__panel { padding: 40px 24px !important; }
+}
+@media (max-width: 480px) {
+  .task-list-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .task-list-item__right { width: 100%; justify-content: space-between; }
+  .view-toggle { flex-wrap: wrap; }
+  .auth-page__title { font-size: 32px !important; }
+}
+
+/* Profile page grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 900px;
+}
+@media (max-width: 768px) {
+  .profile-grid { grid-template-columns: 1fr; }
+}
