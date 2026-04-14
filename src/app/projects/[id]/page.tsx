@@ -4,6 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Button from "@/components/ui/Button";
 import CalendarView from "@/components/tasks/CalendarView";
 import TaskCard from "@/components/tasks/TaskCard";
 import CreateTaskModal from "@/components/tasks/CreateTaskModal";
@@ -101,13 +102,14 @@ export default function ProjectDetailPage() {
             {project.description && <p className="project-detail__subtitle">{project.description}</p>}
           </div>
           <div className="project-detail__actions">
-            <button className="btn btn--primary btn--icon" onClick={() => setShowCreateTask(true)}>Créer une tâche</button>
-            <button className="btn-ia" onClick={() => setShowAI(true)} aria-label="Création IA">
-              <svg viewBox="0 0 14 14" fill="none"><path d="M7 1l1.5 3.5L12 6l-3.5 1.5L7 11l-1.5-3.5L2 6l3.5-1.5L7 1z" fill="currentColor"/></svg>
+            <Button variant="primary" onClick={() => setShowCreateTask(true)}>Créer une tâche</Button>
+            <Button variant="ia" onClick={() => setShowAI(true)} icon={
+              <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><path d="M7 1l1.5 3.5L12 6l-3.5 1.5L7 11l-1.5-3.5L2 6l3.5-1.5L7 1z" fill="currentColor"/></svg>
+            }>
               IA
-            </button>
+            </Button>
             {isOwner && (
-              <button className="btn btn--outline" style={{ color: "#E5484D", borderColor: "#E5484D" }} onClick={handleDeleteProject}>Supprimer</button>
+              <Button variant="danger" onClick={handleDeleteProject}>Supprimer</Button>
             )}
           </div>
         </div>

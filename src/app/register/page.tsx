@@ -6,8 +6,10 @@ import { registerUser } from "@/services/api";
 import { useAuth } from "@/context/auth-context";
 import Logo from "@/components/layout/Logo";
 import AuthIllustration from "@/components/auth/AuthIllustration";
+import { Input } from "@/components/ui/Input";
 
 export default function RegisterPage() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,17 +20,13 @@ export default function RegisterPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
     setError("");
-    if (password.length < 6) {
-      setError("Le mot de passe doit contenir au moins 6 caractères");
-      return;
-    }
     setLoading(true);
     try {
-      await registerUser(email, password);
+      await registerUser(email, password, name || undefined);
       await refreshUser();
       router.push("/dashboard");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Erreur lors de l'inscription");
+      setError(err instanceof Error ? err.message : "Erreur d'inscription");
     } finally {
       setLoading(false);
     }
@@ -41,24 +39,27 @@ export default function RegisterPage() {
           <Logo variant="top" width={252} />
         </div>
 
-        <h1 className="auth-page__title">Inscription</h1>
+        <h1 className="auth-page__title">Créer un compte</h1>
 
         <form className="auth-page__form" onSubmit={handleSubmit} noValidate>
           {error && <p className="auth-page__error" role="alert">{error}</p>}
-          <div className="form-group">
-            <label className="form-label" htmlFor="email">Email</label>
-            <input id="email" type="email" className="form-input"
-              autoComplete="email" value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required aria-required="true" />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="password">Mot de passe</label>
-            <input id="password" type="password" className="form-input"
-              autoComplete="new-password" value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required aria-required="true" minLength={6} />
-          </div>
+          <Input
+            id="name" type="text" label="Nom (optionnel)"
+            autoComplete="name" value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <Input
+            id="email" type="email" label="Email"
+            autoComplete="email" value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required aria-required="true"
+          />
+          <Input
+            id="password" type="password" label="Mot de passe"
+            autoComplete="new-password" value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required aria-required="true"
+          />
           <button type="submit" className="auth-page__submit" disabled={loading}>
             {loading ? "Inscription..." : "S'inscrire"}
           </button>

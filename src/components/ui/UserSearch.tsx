@@ -12,6 +12,8 @@ interface UserSearchProps {
   placeholder?: string;
   /** Label du champ (optionnel) */
   label?: string;
+  /** Délai de debounce en ms — mettre à 0 dans les tests (défaut : 300) */
+  debounceMs?: number;
 }
 
 /**
@@ -27,6 +29,7 @@ export default function UserSearch({
   excludeIds = [],
   placeholder = "Rechercher par nom ou email…",
   label,
+  debounceMs = 300,
 }: UserSearchProps) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<User[]>([]);
@@ -46,7 +49,7 @@ export default function UserSearch({
         const users = await searchUsers(q);
         const filtered = users.filter((u) => !excludeIds.includes(u.id));
         setResults(filtered);
-        setOpen(filtered.length > 0);
+        setOpen(true); // ouvert même si vide (message "aucun résultat")
         setActiveIndex(-1);
       } catch {
         setResults([]);
@@ -59,7 +62,7 @@ export default function UserSearch({
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => search(query), 300);
+    debounceRef.current = setTimeout(() => search(query), debounceMs);
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current); };
   }, [query, search]);
 
@@ -113,6 +116,7 @@ export default function UserSearch({
           onKeyDown={handleKeyDown}
           onFocus={() => results.length > 0 && setOpen(true)}
           placeholder={placeholder}
+          role="combobox"
           aria-autocomplete="list"
           aria-expanded={open}
           autoComplete="off"

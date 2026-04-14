@@ -1,9 +1,10 @@
 "use client";
-import { useState } from "react";
 import Modal from "@/components/ui/Modal";
+import Button from "@/components/ui/Button";
+import UserSearch from "@/components/ui/UserSearch";
 import { useToast } from "@/components/ui/Toast";
 import { useAddContributor } from "@/hooks/use-queries";
-import type { Project } from "@/types";
+import type { Project, User } from "@/types";
 
 interface AddContributorModalProps {
   isOpen: boolean;
@@ -14,20 +15,17 @@ interface AddContributorModalProps {
 export default function AddContributorModal({ isOpen, onClose, project }: AddContributorModalProps) {
   const { showToast } = useToast();
   const addContributor = useAddContributor(project.id);
-  const [email, setEmail] = useState("");
 
-  function handleClose() { setEmail(""); onClose(); }
+  const excludeIds = [
+    project.ownerId,
+    ...(project.members?.map((m) => m.userId) || []),
+  ];
 
-  async function handleSubmit() {
-    if (!email.trim()) return;
-    if (project.owner && email.toLowerCase() === project.owner.email.toLowerCase()) {
-      showToast("Le propriétaire du projet ne peut pas être ajouté comme contributeur", "error");
-      return;
-    }
+  async function handleSelect(user: User) {
     try {
-      await addContributor.mutateAsync({ email });
-      showToast("Contributeur ajouté");
-      handleClose();
+      await addContributor.mutateAsync({ email: user.email });
+      showToast(`${user.name || user.email} ajouté`);
+      onClose();
     } catch (e: unknown) {
       showToast(e instanceof Error ? e.message : "Erreur", "error");
     }
@@ -36,26 +34,23 @@ export default function AddContributorModal({ isOpen, onClose, project }: AddCon
   return (
     <Modal
       isOpen={isOpen}
-      onClose={handleClose}
+      onClose={onClose}
       title="Ajouter un contributeur"
       footer={
-        <button
-          className={`btn ${email.trim() ? "btn--primary" : "btn--disabled"}`}
-          disabled={!email.trim() || addContributor.isPending}
-          onClick={handleSubmit}
-        >
-          {addContributor.isPending ? "..." : "Ajouter"}
-        </button>
+        <Button variant="outline" onClick={onClose}>
+          Fermer
+        </Button>
       }
     >
-      <div className="form-group">
-        <label className="form-label form-label--required" htmlFor="ce">Email du contributeur</label>
-        <input id="ce" type="email" className="form-input" value={email}
-          onChange={(e) => setEmail(e.target.value)} placeholder="email@exemple.com" />
-        <p style={{ fontSize: 11, color: "#9CA3AF", marginTop: 4 }}>
-          Le propriétaire du projet ({project.owner?.email}) ne peut pas être ajouté comme contributeur.
-        </p>
-      </div>
+      <UserSearch
+        label="Rechercher un utilisateur"
+        onSelect={handleSelect}
+        excludeIds={excludeIds}
+        placeholder="Nom ou email…"
+      />
+      <p style={{ fontSize: 11, color: "#9CA3AF", marginTop: 8 }}>
+        Le propriétaire ({project.owner?.email}) et les membres actuels sont exclus.
+      </p>
     </Modal>
   );
 }

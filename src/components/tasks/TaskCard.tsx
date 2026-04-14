@@ -1,7 +1,16 @@
 "use client";
 import { useState } from "react";
-import { formatDate, timeAgo, STATUS_LABELS, STATUS_BADGE_CLASS, getInitials, PRIORITY_LABELS } from "@/lib/utils";
-import type { Task, Comment as TComment, User } from "@/types";
+import Badge from "@/components/ui/Badge";
+import Card from "@/components/ui/Card";
+import { formatDate, timeAgo, STATUS_LABELS, PRIORITY_LABELS, getInitials } from "@/lib/utils";
+import type { Task, Comment as TComment, User, TaskStatus, TaskPriority } from "@/types";
+
+const STATUS_TO_VARIANT: Record<TaskStatus, "todo" | "inprogress" | "done" | "cancelled"> = {
+  TODO: "todo", IN_PROGRESS: "inprogress", DONE: "done", CANCELLED: "cancelled",
+};
+const PRIORITY_TO_VARIANT: Record<TaskPriority, "low" | "medium" | "high" | "urgent"> = {
+  LOW: "low", MEDIUM: "medium", HIGH: "high", URGENT: "urgent",
+};
 
 interface TaskCardProps {
   task: Task;
@@ -23,19 +32,17 @@ export default function TaskCard({ task, currentUser, onEdit, onDelete, onAddCom
   }
 
   return (
-    <div className="task-detail-card">
+    <Card padded={false} className="task-detail-card">
       <div className="task-detail-card__header">
         <div className="task-detail-card__title-group">
           <span className="task-detail-card__title">{task.title}</span>
-          <span className={`badge ${STATUS_BADGE_CLASS[task.status]}`}>{STATUS_LABELS[task.status]}</span>
+          <Badge variant={STATUS_TO_VARIANT[task.status]}>
+            {STATUS_LABELS[task.status]}
+          </Badge>
           {task.priority && task.priority !== "MEDIUM" && (
-            <span className="badge" style={{
-              background: task.priority === "URGENT" ? "#FEF2F2" : task.priority === "HIGH" ? "#FFF7ED" : "#F0FDF4",
-              color: task.priority === "URGENT" ? "#DC2626" : task.priority === "HIGH" ? "#EA580C" : "#16A34A",
-              fontSize: 10,
-            }}>
+            <Badge variant={PRIORITY_TO_VARIANT[task.priority]}>
               {PRIORITY_LABELS[task.priority]}
-            </span>
+            </Badge>
           )}
         </div>
         <div style={{ display: "flex", gap: 4 }}>
@@ -109,6 +116,6 @@ export default function TaskCard({ task, currentUser, onEdit, onDelete, onAddCom
           </div>
         </div>
       )}
-    </div>
+    </Card>
   );
 }

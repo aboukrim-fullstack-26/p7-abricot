@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import Modal from "@/components/ui/Modal";
+import Button from "@/components/ui/Button";
+import { Input, Textarea } from "@/components/ui/Input";
 import { useToast } from "@/components/ui/Toast";
 import { useCreateProject } from "@/hooks/use-queries";
 
@@ -12,7 +14,6 @@ interface CreateProjectModalProps {
 export default function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
   const { showToast } = useToast();
   const createProject = useCreateProject();
-
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
 
@@ -35,25 +36,24 @@ export default function CreateProjectModal({ isOpen, onClose }: CreateProjectMod
       onClose={handleClose}
       title="Créer un projet"
       footer={
-        <button
-          className={`btn ${name.trim() ? "btn--primary" : "btn--disabled"}`}
-          disabled={!name.trim() || createProject.isPending}
+        <Button
+          variant={name.trim() ? "primary" : "outline"}
+          disabled={!name.trim()}
+          loading={createProject.isPending}
           onClick={handleSubmit}
         >
-          {createProject.isPending ? "Création..." : "Ajouter un projet"}
-        </button>
+          Ajouter un projet
+        </Button>
       }
     >
-      <div className="form-group">
-        <label className="form-label form-label--required" htmlFor="proj-name">Titre</label>
-        <input id="proj-name" type="text" className="form-input" value={name}
-          onChange={(e) => setName(e.target.value)} />
-      </div>
-      <div className="form-group">
-        <label className="form-label" htmlFor="proj-desc">Description</label>
-        <textarea id="proj-desc" className="form-input form-input--textarea" value={desc}
-          onChange={(e) => setDesc(e.target.value)} />
-      </div>
+      <Input
+        id="proj-name" label="Titre" required
+        value={name} onChange={(e) => setName(e.target.value)}
+      />
+      <Textarea
+        id="proj-desc" label="Description"
+        value={desc} onChange={(e) => setDesc(e.target.value)}
+      />
     </Modal>
   );
 }

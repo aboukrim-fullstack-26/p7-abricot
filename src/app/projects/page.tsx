@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import Button from "@/components/ui/Button";
 import ProjectCard from "@/components/projects/ProjectCard";
 import CreateProjectModal from "@/components/projects/CreateProjectModal";
 import { useAuth } from "@/context/auth-context";
@@ -25,12 +26,13 @@ export default function ProjectsPage() {
             <p className="page-header__subtitle">Gérez vos projets</p>
           </div>
           <div className="page-header__actions">
-            <button className="btn btn--primary btn--icon" onClick={() => setShowModal(true)}>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
+            <Button
+              variant="primary"
+              icon={<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>}
+              onClick={() => setShowModal(true)}
+            >
               Créer un projet
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -46,7 +48,6 @@ export default function ProjectsPage() {
         )}
       </main>
       <Footer />
-
       <CreateProjectModal isOpen={showModal} onClose={() => setShowModal(false)} />
     </>
   );

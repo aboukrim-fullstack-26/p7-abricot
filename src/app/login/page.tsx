@@ -6,6 +6,7 @@ import { login } from "@/services/api";
 import { useAuth } from "@/context/auth-context";
 import Logo from "@/components/layout/Logo";
 import AuthIllustration from "@/components/auth/AuthIllustration";
+import { Input } from "@/components/ui/Input";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -41,20 +42,18 @@ export default function LoginPage() {
 
         <form className="auth-page__form" onSubmit={handleSubmit} noValidate>
           {error && <p className="auth-page__error" role="alert">{error}</p>}
-          <div className="form-group">
-            <label className="form-label" htmlFor="email">Email</label>
-            <input id="email" type="email" className="form-input"
-              autoComplete="email" value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required aria-required="true" />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="password">Mot de passe</label>
-            <input id="password" type="password" className="form-input"
-              autoComplete="current-password" value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required aria-required="true" />
-          </div>
+          <Input
+            id="email" type="email" label="Email"
+            autoComplete="email" value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required aria-required="true"
+          />
+          <Input
+            id="password" type="password" label="Mot de passe"
+            autoComplete="current-password" value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required aria-required="true"
+          />
           <Link href="/forgot-password" className="auth-page__forgot">
             Mot de passe oublié&nbsp;?
           </Link>

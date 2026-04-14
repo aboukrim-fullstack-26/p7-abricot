@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Modal from "@/components/ui/Modal";
+import Button from "@/components/ui/Button";
+import { Input, Textarea } from "@/components/ui/Input";
 import { useToast } from "@/components/ui/Toast";
 import { useUpdateProject } from "@/hooks/use-queries";
 import type { Project } from "@/types";
@@ -14,15 +16,11 @@ interface EditProjectModalProps {
 export default function EditProjectModal({ isOpen, onClose, project }: EditProjectModalProps) {
   const { showToast } = useToast();
   const updateProject = useUpdateProject(project.id);
-
   const [name, setName] = useState("");
   const [desc, setDesc] = useState("");
 
   useEffect(() => {
-    if (isOpen) {
-      setName(project.name);
-      setDesc(project.description || "");
-    }
+    if (isOpen) { setName(project.name); setDesc(project.description || ""); }
   }, [isOpen, project]);
 
   async function handleSubmit() {
@@ -42,25 +40,24 @@ export default function EditProjectModal({ isOpen, onClose, project }: EditProje
       onClose={onClose}
       title="Modifier le projet"
       footer={
-        <button
-          className={`btn ${name.trim() ? "btn--primary" : "btn--disabled"}`}
-          disabled={!name.trim() || updateProject.isPending}
+        <Button
+          variant={name.trim() ? "primary" : "outline"}
+          disabled={!name.trim()}
+          loading={updateProject.isPending}
           onClick={handleSubmit}
         >
-          {updateProject.isPending ? "..." : "Enregistrer"}
-        </button>
+          Enregistrer
+        </Button>
       }
     >
-      <div className="form-group">
-        <label className="form-label form-label--required" htmlFor="ep-name">Titre</label>
-        <input id="ep-name" type="text" className="form-input" value={name}
-          onChange={(e) => setName(e.target.value)} />
-      </div>
-      <div className="form-group">
-        <label className="form-label" htmlFor="ep-desc">Description</label>
-        <textarea id="ep-desc" className="form-input form-input--textarea" value={desc}
-          onChange={(e) => setDesc(e.target.value)} />
-      </div>
+      <Input
+        id="ep-name" label="Titre" required
+        value={name} onChange={(e) => setName(e.target.value)}
+      />
+      <Textarea
+        id="ep-desc" label="Description"
+        value={desc} onChange={(e) => setDesc(e.target.value)}
+      />
     </Modal>
   );
 }
