@@ -4,6 +4,7 @@ import Badge from "@/components/ui/Badge";
 import Card from "@/components/ui/Card";
 import { formatDate, timeAgo, STATUS_LABELS, PRIORITY_LABELS, getInitials } from "@/lib/utils";
 import type { Task, Comment as TComment, User, TaskStatus, TaskPriority } from "@/types";
+import styles from "./TaskCard.module.css";
 
 const STATUS_TO_VARIANT: Record<TaskStatus, "todo" | "inprogress" | "done" | "cancelled"> = {
   TODO: "todo", IN_PROGRESS: "inprogress", DONE: "done", CANCELLED: "cancelled",
@@ -45,7 +46,7 @@ export default function TaskCard({ task, currentUser, onEdit, onDelete, onAddCom
             </Badge>
           )}
         </div>
-        <div style={{ display: "flex", gap: 4 }}>
+        <div className={styles.actions}>
           <button className="btn-menu" onClick={() => onEdit(task)} aria-label="Modifier la tâche" title="Modifier">
             <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><path d="M8.5 1.5a1.5 1.5 0 012.121 2.121L4 10.243l-2.5.5.5-2.5L8.5 1.5z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
@@ -67,10 +68,10 @@ export default function TaskCard({ task, currentUser, onEdit, onDelete, onAddCom
       )}
 
       {task.assignees && task.assignees.length > 0 && (
-        <div className="task-detail-card__assignees" style={{ marginTop: 8 }}>
-          <span style={{ fontSize: 12, color: "#6B7280", marginRight: 6 }}>Assigné à :</span>
+        <div className={styles.assignees}>
+          <span className={styles.assigneesLabel}>Assigné à :</span>
           {task.assignees.map((a) => (
-            <span key={a.id} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+            <span key={a.id} className={styles.assigneeItem}>
               <span className="avatar avatar--sm avatar--gray">{getInitials(a.user.name)}</span>
               <span className="chip">{a.user.name || a.user.email}</span>
             </span>
@@ -78,12 +79,18 @@ export default function TaskCard({ task, currentUser, onEdit, onDelete, onAddCom
         </div>
       )}
 
-      <div className="task-detail-card__comments-toggle"
+      <div
+        className="task-detail-card__comments-toggle"
         onClick={() => setOpen((o) => !o)}
-        role="button" tabIndex={0} aria-expanded={open}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setOpen((o) => !o); }}>
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setOpen((o) => !o); }}
+      >
         <span>Commentaires ({task.comments?.length || 0})</span>
-        <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><path d={open ? "M3 5l4 4 4-4" : "M3 9l4-4 4 4"} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg>
+        <svg viewBox="0 0 14 14" fill="none" width="14" height="14">
+          <path d={open ? "M3 5l4 4 4-4" : "M3 9l4-4 4 4"} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
       </div>
 
       {open && (
@@ -96,8 +103,10 @@ export default function TaskCard({ task, currentUser, onEdit, onDelete, onAddCom
                   <strong>{c.author?.name || c.author?.email}</strong>
                   <time>{timeAgo(c.createdAt)}</time>
                   {c.authorId === currentUser.id && (
-                    <button onClick={() => onDeleteComment(task.id, c.id)}
-                      style={{ color: "#E5484D", fontSize: 11, marginLeft: 8, cursor: "pointer", background: "none", border: "none" }}>
+                    <button
+                      onClick={() => onDeleteComment(task.id, c.id)}
+                      className={styles.commentDeleteBtn}
+                    >
                       Supprimer
                     </button>
                   )}
@@ -107,12 +116,18 @@ export default function TaskCard({ task, currentUser, onEdit, onDelete, onAddCom
             </div>
           ))}
           <div className="comment-input">
-            <div className="comment__avatar" style={{ background: "#FBF1EB", color: "#555" }}>{getInitials(currentUser.name)}</div>
-            <input type="text" className="comment-input__field" placeholder="Ajouter un commentaire..."
+            <div className={`comment__avatar ${styles.currentUserAvatar}`}>
+              {getInitials(currentUser.name)}
+            </div>
+            <input
+              type="text"
+              className="comment-input__field"
+              placeholder="Ajouter un commentaire..."
               value={commentText}
               onChange={(e) => setCommentText(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") handleAddComment(); }}
-              aria-label="Ajouter un commentaire" />
+              aria-label="Ajouter un commentaire"
+            />
           </div>
         </div>
       )}

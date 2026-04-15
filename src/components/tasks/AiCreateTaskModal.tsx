@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useToast } from "@/components/ui/Toast";
 import { useCreateTask } from "@/hooks/use-queries";
+import styles from "./AiCreateTaskModal.module.css";
 
 interface AiCreateTaskModalProps {
   isOpen: boolean;
@@ -25,11 +26,9 @@ export default function AiCreateTaskModal({ isOpen, onClose, projectId, projectN
   async function handleGenerate() {
     if (!aiPrompt.trim()) return;
     setAiLoading(true);
-
     await new Promise((r) => setTimeout(r, 1500 + Math.random() * 1000));
 
     const prompt = aiPrompt.toLowerCase();
-
     const taskBanks: Record<string, { title: string; description: string }[]> = {
       auth: [
         { title: "Connexion utilisateur", description: "Implémenter le formulaire de connexion avec validation email/mot de passe." },
@@ -69,23 +68,15 @@ export default function AiCreateTaskModal({ isOpen, onClose, projectId, projectN
     };
 
     let selected: { title: string; description: string }[];
-    if (prompt.includes("auth") || prompt.includes("connexion") || prompt.includes("login") || prompt.includes("inscription")) {
-      selected = taskBanks.auth;
-    } else if (prompt.includes("api") || prompt.includes("endpoint") || prompt.includes("backend") || prompt.includes("rest")) {
-      selected = taskBanks.api;
-    } else if (prompt.includes("front") || prompt.includes("interface") || prompt.includes("ui") || prompt.includes("maquette") || prompt.includes("design")) {
-      selected = taskBanks.front;
-    } else if (prompt.includes("test") || prompt.includes("qualité") || prompt.includes("qa")) {
-      selected = taskBanks.test;
-    } else if (prompt.includes("deploy") || prompt.includes("docker") || prompt.includes("ci") || prompt.includes("prod") || prompt.includes("devops")) {
-      selected = taskBanks.deploy;
-    } else {
-      selected = taskBanks.default;
-    }
+    if (prompt.includes("auth") || prompt.includes("connexion") || prompt.includes("login") || prompt.includes("inscription")) selected = taskBanks.auth;
+    else if (prompt.includes("api") || prompt.includes("endpoint") || prompt.includes("backend") || prompt.includes("rest")) selected = taskBanks.api;
+    else if (prompt.includes("front") || prompt.includes("interface") || prompt.includes("ui") || prompt.includes("maquette") || prompt.includes("design")) selected = taskBanks.front;
+    else if (prompt.includes("test") || prompt.includes("qualité") || prompt.includes("qa")) selected = taskBanks.test;
+    else if (prompt.includes("deploy") || prompt.includes("docker") || prompt.includes("ci") || prompt.includes("prod") || prompt.includes("devops")) selected = taskBanks.deploy;
+    else selected = taskBanks.default;
 
     const shuffled = [...selected].sort(() => Math.random() - 0.5);
-    const count = Math.min(shuffled.length, 3 + Math.floor(Math.random() * 3));
-    setAiTasks(shuffled.slice(0, count));
+    setAiTasks(shuffled.slice(0, Math.min(shuffled.length, 3 + Math.floor(Math.random() * 3))));
     setAiLoading(false);
   }
 
@@ -107,50 +98,56 @@ export default function AiCreateTaskModal({ isOpen, onClose, projectId, projectN
     <div
       className="modal-overlay is-open"
       onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
-      role="dialog" aria-modal="true" aria-label="Création de tâches par IA"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Création de tâches par IA"
     >
-      <div className="modal" style={{ maxWidth: 620, width: "100%", borderRadius: 16, maxHeight: "85vh", display: "flex", flexDirection: "column" }}>
-        {/* Header */}
-        <div className="modal__header" style={{ paddingBottom: 16, borderBottom: "1px solid #F0F2F5" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <svg viewBox="0 0 20 20" fill="none" width="22" height="22"><path d="M10 2l2 5 5 1.5-5 2L10 16l-2-5.5-5-2L8 7 10 2z" fill="#D3580B"/></svg>
-            <h2 style={{ fontSize: 20, fontWeight: 600 }}>Créer des tâches avec l&apos;IA</h2>
+      <div className={`modal ${styles.modal}`}>
+        <div className={`modal__header ${styles.header}`}>
+          <div className={styles.headerInner}>
+            <svg viewBox="0 0 20 20" fill="none" width="22" height="22" aria-hidden="true">
+              <path d="M10 2l2 5 5 1.5-5 2L10 16l-2-5.5-5-2L8 7 10 2z" fill="#D3580B"/>
+            </svg>
+            <h2 className={styles.headerTitle}>Créer des tâches avec l&apos;IA</h2>
           </div>
           <button className="btn-close" onClick={handleClose} aria-label="Fermer">
             <svg viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/></svg>
           </button>
         </div>
 
-        {/* Contenu */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "16px 24px" }}>
+        <div className={styles.body}>
           {aiTasks.length === 0 && !aiLoading && (
-            <p style={{ color: "#9CA3AF", fontSize: 13, textAlign: "center", padding: "40px 0" }}>
+            <p className={styles.emptyState}>
               Décrivez les tâches que vous souhaitez créer et l&apos;IA les génèrera pour vous.
             </p>
           )}
           {aiLoading && (
-            <div style={{ textAlign: "center", padding: "40px 0" }}>
+            <div className={styles.loadingState}>
               <div className="spinner" />
-              <p style={{ color: "#6B7280", fontSize: 13, marginTop: 12 }}>Génération en cours...</p>
+              <p className={styles.loadingText}>Génération en cours...</p>
             </div>
           )}
           {aiTasks.length > 0 && (
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14 }}>
-                <svg viewBox="0 0 20 20" fill="none" width="18" height="18"><path d="M10 2l2 5 5 1.5-5 2L10 16l-2-5.5-5-2L8 7 10 2z" fill="#D3580B"/></svg>
-                <h3 style={{ fontSize: 17, fontWeight: 600 }}>Vos tâches...</h3>
+              <div className={styles.resultHeader}>
+                <svg viewBox="0 0 20 20" fill="none" width="18" height="18" aria-hidden="true">
+                  <path d="M10 2l2 5 5 1.5-5 2L10 16l-2-5.5-5-2L8 7 10 2z" fill="#D3580B"/>
+                </svg>
+                <h3 className={styles.resultTitle}>Vos tâches...</h3>
               </div>
               {aiTasks.map((t, i) => (
-                <div key={i} className="ai-task-list__card" style={{ background: "#fff", border: "1px solid #E8EAED", borderRadius: 10, padding: 14, marginBottom: 8 }}>
-                  <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>{t.title}</div>
-                  <div style={{ fontSize: 12, color: "#6B7280", marginBottom: 8 }}>{t.description}</div>
-                  <button style={{ fontSize: 11, color: "#E5484D", cursor: "pointer", background: "none", border: "none" }}
-                    onClick={() => setAiTasks((prev) => prev.filter((_, j) => j !== i))}>
+                <div key={i} className={styles.taskItem}>
+                  <div className={styles.taskItemTitle}>{t.title}</div>
+                  <div className={styles.taskItemDesc}>{t.description}</div>
+                  <button
+                    className={styles.taskItemDelete}
+                    onClick={() => setAiTasks((prev) => prev.filter((_, j) => j !== i))}
+                  >
                     ✕ Supprimer
                   </button>
                 </div>
               ))}
-              <div style={{ textAlign: "center", paddingTop: 12 }}>
+              <div className={styles.addAllWrapper}>
                 <button className="btn btn--primary" onClick={handleAddTasks} disabled={createTask.isPending}>
                   {createTask.isPending ? "Ajout..." : `+ Ajouter les ${aiTasks.length} tâche(s)`}
                 </button>
@@ -159,12 +156,11 @@ export default function AiCreateTaskModal({ isOpen, onClose, projectId, projectN
           )}
         </div>
 
-        {/* Barre de saisie */}
-        <div style={{ padding: "12px 20px", borderTop: "1px solid #F0F2F5" }}>
-          <div className="ai-input-bar" style={{ display: "flex", gap: 8 }}>
+        <div className={styles.footer}>
+          <div className={styles.inputBar}>
             <input
               type="text"
-              style={{ flex: 1, height: 42, padding: "0 14px", border: "1px solid #E8EAED", borderRadius: 10, fontSize: 13 }}
+              className={styles.promptInput}
               value={aiPrompt}
               onChange={(e) => setAiPrompt(e.target.value)}
               placeholder="Décrivez les tâches que vous souhaitez ajouter..."
@@ -175,10 +171,12 @@ export default function AiCreateTaskModal({ isOpen, onClose, projectId, projectN
             <button
               onClick={handleGenerate}
               disabled={!aiPrompt.trim() || aiLoading}
-              style={{ width: 42, height: 42, borderRadius: 10, background: aiPrompt.trim() ? "#D3580B" : "#E5E7EB", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}
+              className={`${styles.sendBtn} ${aiPrompt.trim() && !aiLoading ? styles["sendBtn--active"] : styles["sendBtn--inactive"]}`}
               aria-label="Envoyer"
             >
-              <svg viewBox="0 0 14 14" fill="none" width="16" height="16"><path d="M7 12V2M3 6l4-4 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <svg viewBox="0 0 14 14" fill="none" width="16" height="16" aria-hidden="true">
+                <path d="M7 12V2M3 6l4-4 4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </button>
           </div>
         </div>

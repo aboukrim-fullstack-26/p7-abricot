@@ -3904,3 +3904,9 @@ h1, h2, h3, h4, h5, h6 {
   background: #F0F2F5;
   margin: 20px 0;
 }
+
+/* Logo link wrapper */
+.navbar__logo-link { display: inline-flex; align-items: center; }
+
+/* Projects grid empty state */
+.projects-grid__empty { color: #9CA3AF; grid-column: 1 / -1; text-align: center; padding: 40px; }

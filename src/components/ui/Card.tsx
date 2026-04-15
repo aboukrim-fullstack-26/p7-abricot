@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
+import styles from "./Card.module.css";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -10,8 +11,6 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 
 /**
  * Card — conteneur avec border, border-radius et ombre légère.
- *
- * Utilisée comme base pour ProjectCard, TaskCard, etc.
  * Toutes les props natives div sont forwarded (onClick, aria-*, …).
  */
 export default function Card({
@@ -19,21 +18,19 @@ export default function Card({
   padded = true,
   clickable = false,
   className = "",
-  style,
   ...rest
 }: CardProps) {
-  const base: React.CSSProperties = {
-    background: "#fff",
-    border: "1px solid #E8EAED",
-    borderRadius: 12,
-    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
-    ...(padded ? { padding: "18px 20px" } : {}),
-    ...(clickable ? { cursor: "pointer" } : {}),
-    ...style,
-  };
+  const cls = [
+    styles.card,
+    padded ? styles["card--padded"] : "",
+    clickable ? styles["card--clickable"] : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div className={className} style={base} {...rest}>
+    <div className={cls} {...rest}>
       {children}
     </div>
   );

@@ -20,6 +20,7 @@ import {
 } from "@/hooks/use-queries";
 import { STATUS_LABELS, getInitials } from "@/lib/utils";
 import type { Task, TaskStatus } from "@/types";
+import styles from "./page.module.css";
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -83,8 +84,22 @@ export default function ProjectDetailPage() {
     catch (e: unknown) { showToast(e instanceof Error ? e.message : "Erreur", "error"); }
   }
 
-  if (authLoading || projectLoading || tasksLoading) return <><Header /><div className="spinner" style={{ marginTop: 100 }} /></>;
-  if (!project || !user) return <><Header /><main className="main-content" id="main-content"><p>Projet introuvable</p></main></>;
+  if (authLoading || projectLoading || tasksLoading) {
+    return (
+      <>
+        <Header />
+        <div className={`spinner ${styles.spinnerWrapper}`} />
+      </>
+    );
+  }
+  if (!project || !user) {
+    return (
+      <>
+        <Header />
+        <main className="main-content" id="main-content"><p>Projet introuvable</p></main>
+      </>
+    );
+  }
 
   return (
     <>
@@ -97,15 +112,21 @@ export default function ProjectDetailPage() {
           <div className="project-detail__title-block">
             <div className="project-detail__title-row">
               <h1 className="project-detail__title">{project.name}</h1>
-              {isAdmin && <button className="project-detail__edit-link" onClick={() => setShowEditProject(true)}>Modifier</button>}
+              {isAdmin && (
+                <button className="project-detail__edit-link" onClick={() => setShowEditProject(true)}>
+                  Modifier
+                </button>
+              )}
             </div>
             {project.description && <p className="project-detail__subtitle">{project.description}</p>}
           </div>
           <div className="project-detail__actions">
             <Button variant="primary" onClick={() => setShowCreateTask(true)}>Créer une tâche</Button>
-            <Button variant="ia" onClick={() => setShowAI(true)} icon={
-              <svg viewBox="0 0 14 14" fill="none" width="14" height="14"><path d="M7 1l1.5 3.5L12 6l-3.5 1.5L7 11l-1.5-3.5L2 6l3.5-1.5L7 1z" fill="currentColor"/></svg>
-            }>
+            <Button
+              variant="ia"
+              onClick={() => setShowAI(true)}
+              icon={<svg viewBox="0 0 14 14" fill="none" width="14" height="14" aria-hidden="true"><path d="M7 1l1.5 3.5L12 6l-3.5 1.5L7 11l-1.5-3.5L2 6l3.5-1.5L7 1z" fill="currentColor"/></svg>}
+            >
               IA
             </Button>
             {isOwner && (
@@ -115,17 +136,39 @@ export default function ProjectDetailPage() {
         </div>
 
         <div className="contributors-bar">
-          <span className="contributors-bar__label">Contributeurs <strong>{(project.members?.length || 0) + 1} personne(s)</strong></span>
+          <span className="contributors-bar__label">
+            Contributeurs <strong>{(project.members?.length || 0) + 1} personne(s)</strong>
+          </span>
           <div className="contributors-bar__members">
-            {project.owner && (<><span className="avatar avatar--sm avatar--orange">{getInitials(project.owner.name)}</span><span className="chip chip--owner">Propriétaire</span></>)}
+            {project.owner && (
+              <>
+                <span className="avatar avatar--sm avatar--orange">{getInitials(project.owner.name)}</span>
+                <span className="chip chip--owner">Propriétaire</span>
+              </>
+            )}
             {project.members?.map((m) => (
-              <span key={m.id} style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+              <span key={m.id} className={styles.contributorItem}>
                 <span className="avatar avatar--sm avatar--gray">{getInitials(m.user.name)}</span>
                 <span className="chip">{m.user.name || m.user.email}</span>
-                {isAdmin && <button onClick={() => handleRemoveContributor(m.userId, m.user.name || m.user.email)} style={{ color: "#E5484D", fontSize: 12, cursor: "pointer", background: "none", border: "none", lineHeight: 1, padding: "2px 4px", borderRadius: 4 }} aria-label={`Retirer ${m.user.name || m.user.email}`}>✕</button>}
+                {isAdmin && (
+                  <button
+                    onClick={() => handleRemoveContributor(m.userId, m.user.name || m.user.email)}
+                    className={styles.removeContributorBtn}
+                    aria-label={`Retirer ${m.user.name || m.user.email}`}
+                  >
+                    ✕
+                  </button>
+                )}
               </span>
             ))}
-            {isAdmin && <button className="chip" style={{ cursor: "pointer", background: "#FFE7D9", color: "#D3580B" }} onClick={() => setShowAddContrib(true)}>+ Ajouter</button>}
+            {isAdmin && (
+              <button
+                className={`chip ${styles.addContributorBtn}`}
+                onClick={() => setShowAddContrib(true)}
+              >
+                + Ajouter
+              </button>
+            )}
           </div>
         </div>
 
@@ -137,36 +180,66 @@ export default function ProjectDetailPage() {
             </div>
             <div className="project-tasks__toolbar">
               <div className="tab-bar">
-                <button className={`tab-bar__item ${taskView === "list" ? "tab-bar__item--active" : ""}`} onClick={() => setTaskView("list")}>
-                  <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><rect x="1" y="2" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="6.25" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="10.5" width="12" height="1.5" rx="0.75" fill="currentColor"/></svg>Liste
+                <button
+                  className={`tab-bar__item ${taskView === "list" ? "tab-bar__item--active" : ""}`}
+                  onClick={() => setTaskView("list")}
+                >
+                  <svg viewBox="0 0 14 14" fill="none" width="13" height="13" aria-hidden="true"><rect x="1" y="2" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="6.25" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="10.5" width="12" height="1.5" rx="0.75" fill="currentColor"/></svg>
+                  Liste
                 </button>
-                <button className={`tab-bar__item ${taskView === "calendar" ? "tab-bar__item--active" : ""}`} onClick={() => setTaskView("calendar")}>
-                  <svg viewBox="0 0 14 14" fill="none" width="13" height="13"><rect x="1.5" y="2" width="11" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M4.5 1v2M9.5 1v2M1.5 5.5h11" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>Calendrier
+                <button
+                  className={`tab-bar__item ${taskView === "calendar" ? "tab-bar__item--active" : ""}`}
+                  onClick={() => setTaskView("calendar")}
+                >
+                  <svg viewBox="0 0 14 14" fill="none" width="13" height="13" aria-hidden="true"><rect x="1.5" y="2" width="11" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.3"/><path d="M4.5 1v2M9.5 1v2M1.5 5.5h11" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg>
+                  Calendrier
                 </button>
               </div>
-              {taskView === "list" && (<>
-                <div className="tab-bar">
-                  {(["ALL","TODO","IN_PROGRESS","DONE"] as const).map((s) => (
-                    <button key={s} className={`tab-bar__item ${statusFilter === s ? "tab-bar__item--active" : ""}`} onClick={() => setStatusFilter(s)}>
-                      {s === "ALL" ? "Tout" : STATUS_LABELS[s]}
-                    </button>
-                  ))}
-                </div>
-                <div className="search-field">
-                  <input type="text" className="search-field__input" placeholder="Rechercher une tâche" value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Rechercher" />
-                  <span className="search-field__icon"><svg viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.5"/><path d="M9.5 9.5L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></span>
-                </div>
-              </>)}
+              {taskView === "list" && (
+                <>
+                  <div className="tab-bar">
+                    {(["ALL", "TODO", "IN_PROGRESS", "DONE"] as const).map((s) => (
+                      <button
+                        key={s}
+                        className={`tab-bar__item ${statusFilter === s ? "tab-bar__item--active" : ""}`}
+                        onClick={() => setStatusFilter(s)}
+                      >
+                        {s === "ALL" ? "Tout" : STATUS_LABELS[s]}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="search-field">
+                    <input
+                      type="text"
+                      className="search-field__input"
+                      placeholder="Rechercher une tâche"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      aria-label="Rechercher"
+                    />
+                    <span className="search-field__icon" aria-hidden="true">
+                      <svg viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.5"/><path d="M9.5 9.5L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
-          {taskView === "calendar" && <CalendarView tasks={tasks} onTaskClick={(t) => { setEditingTask(t); setShowEditTask(true); }} />}
+          {taskView === "calendar" && (
+            <CalendarView tasks={tasks} onTaskClick={(t) => { setEditingTask(t); setShowEditTask(true); }} />
+          )}
 
           {taskView === "list" && (
             <div className="project-tasks__list">
-              {filtered.length === 0 && <p style={{ color: "#9CA3AF", padding: 20 }}>Aucune tâche</p>}
+              {filtered.length === 0 && (
+                <p className={styles.emptyTasks}>Aucune tâche</p>
+              )}
               {filtered.map((task) => (
-                <TaskCard key={task.id} task={task} currentUser={user}
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  currentUser={user}
                   onEdit={(t) => { setEditingTask(t); setShowEditTask(true); }}
                   onDelete={handleDeleteTask}
                   onAddComment={handleAddComment}

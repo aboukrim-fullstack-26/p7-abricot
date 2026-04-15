@@ -1,0 +1,36 @@
+.actions {
+  display: flex;
+  gap: 4px;
+}
+
+.assignees {
+  margin-top: 8px;
+}
+
+.assigneesLabel {
+  font-size: 12px;
+  color: #6B7280;
+  margin-right: 6px;
+}
+
+.assigneeItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.commentDeleteBtn {
+  color: #E5484D;
+  font-size: 11px;
+  margin-left: 8px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 1;
+}
+
+.currentUserAvatar {
+  background: #FBF1EB;
+  color: #555;
+}

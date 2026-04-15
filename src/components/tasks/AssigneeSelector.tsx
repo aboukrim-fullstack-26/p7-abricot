@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { getInitials } from "@/lib/utils";
 import type { ProjectMember } from "@/types";
+import styles from "./AssigneeSelector.module.css";
 
 interface AssigneeSelectorProps {
   members: ProjectMember[];
@@ -35,23 +36,25 @@ export default function AssigneeSelector({ members, selectedIds, onChange }: Ass
 
   if (assignableUsers.length === 0) {
     return (
-      <p style={{ color: "#9CA3AF", fontSize: 12, fontStyle: "italic" }}>
+      <p className={styles.empty}>
         Aucun contributeur disponible. Ajoutez des contributeurs au projet pour pouvoir leur assigner des tâches.
       </p>
     );
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+    <div className={styles.list}>
       {assignableUsers.map((u) => (
-        <label key={u.id} style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", padding: "6px 0", fontSize: 13 }}>
+        <label key={u.id} className={styles.label}>
           <input
             type="checkbox"
             checked={selectedIds.includes(u.id)}
             onChange={() => toggle(u.id)}
-            style={{ accentColor: "#D3580B", width: 16, height: 16 }}
+            className={styles.checkbox}
           />
-          <span className="avatar avatar--sm avatar--gray" style={{ width: 22, height: 22, fontSize: 9 }}>{getInitials(u.name)}</span>
+          <span className={`avatar avatar--sm avatar--gray ${styles.avatar}`}>
+            {getInitials(u.name)}
+          </span>
           <span>{u.name || u.email}</span>
         </label>
       ))}

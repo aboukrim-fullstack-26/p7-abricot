@@ -39,7 +39,7 @@ export default function ProjectsPage() {
         {isLoading ? <div className="spinner" /> : (
           <div className="projects-grid">
             {projects.length === 0 && (
-              <p style={{ color: "#9CA3AF", gridColumn: "1/-1", textAlign: "center", padding: 40 }}>
+              <p className="projects-grid__empty">
                 Aucun projet. Créez votre premier projet !
               </p>
             )}

@@ -1,0 +1,49 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: #F7F8FA;
+  text-align: center;
+  padding: 40px;
+}
+
+.code {
+  font-size: 72px;
+  font-weight: 700;
+  color: #D3580B;
+  margin-bottom: 8px;
+  line-height: 1;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #212121;
+  margin-bottom: 12px;
+}
+
+.description {
+  color: #6B7280;
+  margin-bottom: 32px;
+  max-width: 400px;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #1B1B1B;
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+
+.link:hover {
+  opacity: 0.85;
+}

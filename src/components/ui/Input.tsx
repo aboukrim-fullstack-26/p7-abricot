@@ -1,7 +1,6 @@
 "use client";
 import { forwardRef, type InputHTMLAttributes, type TextareaHTMLAttributes } from "react";
-
-/* ── Input ──────────────────────────────────────────── */
+import styles from "./Input.module.css";
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -11,7 +10,6 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 /**
  * Input — champ texte stylé avec label, état d'erreur et required.
- *
  * Forwardref pour permettre le focus programmatique.
  */
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
@@ -37,15 +35,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
         {...rest}
       />
       {error && (
-        <p role="alert" style={{ fontSize: 12, color: "#E5484D", marginTop: 4 }}>
+        <p role="alert" className={styles.error}>
           {error}
         </p>
       )}
     </div>
   );
 });
-
-/* ── Textarea ───────────────────────────────────────── */
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
@@ -79,7 +75,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function 
         {...rest}
       />
       {error && (
-        <p role="alert" style={{ fontSize: 12, color: "#E5484D", marginTop: 4 }}>
+        <p role="alert" className={styles.error}>
           {error}
         </p>
       )}

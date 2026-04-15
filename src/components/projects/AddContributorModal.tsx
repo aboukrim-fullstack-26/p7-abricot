@@ -5,6 +5,7 @@ import UserSearch from "@/components/ui/UserSearch";
 import { useToast } from "@/components/ui/Toast";
 import { useAddContributor } from "@/hooks/use-queries";
 import type { Project, User } from "@/types";
+import styles from "./AddContributorModal.module.css";
 
 interface AddContributorModalProps {
   isOpen: boolean;
@@ -48,7 +49,7 @@ export default function AddContributorModal({ isOpen, onClose, project }: AddCon
         excludeIds={excludeIds}
         placeholder="Nom ou email…"
       />
-      <p style={{ fontSize: 11, color: "#9CA3AF", marginTop: 8 }}>
+      <p className={styles.hint}>
         Le propriétaire ({project.owner?.email}) et les membres actuels sont exclus.
       </p>
     </Modal>

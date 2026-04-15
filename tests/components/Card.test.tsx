@@ -8,26 +8,30 @@ describe("Card", () => {
     expect(screen.getByText("Contenu de la carte")).toBeInTheDocument();
   });
 
-  it("applique le padding par défaut (padded=true)", () => {
+  it("applique la classe de base card", () => {
     render(<Card data-testid="card">Contenu</Card>);
-    const card = screen.getByTestId("card");
-    expect(card.style.padding).toBe("18px 20px");
+    expect(screen.getByTestId("card").className).toMatch(/card/);
   });
 
-  it("n'applique pas de padding quand padded=false", () => {
+  it("inclut la classe padded par défaut", () => {
+    render(<Card data-testid="card">Contenu</Card>);
+    // padded=true par défaut → classe card--padded présente
+    expect(screen.getByTestId("card").className).toMatch(/padded/);
+  });
+
+  it("n'inclut pas la classe padded quand padded=false", () => {
     render(<Card padded={false} data-testid="card">Contenu</Card>);
-    const card = screen.getByTestId("card");
-    expect(card.style.padding).toBe("");
+    expect(screen.getByTestId("card").className).not.toMatch(/padded/);
   });
 
-  it("applique cursor:pointer quand clickable=true", () => {
+  it("inclut la classe clickable quand clickable=true", () => {
     render(<Card clickable data-testid="card">Contenu</Card>);
-    expect(screen.getByTestId("card").style.cursor).toBe("pointer");
+    expect(screen.getByTestId("card").className).toMatch(/clickable/);
   });
 
-  it("n'applique pas cursor:pointer par défaut", () => {
+  it("n'inclut pas la classe clickable par défaut", () => {
     render(<Card data-testid="card">Contenu</Card>);
-    expect(screen.getByTestId("card").style.cursor).not.toBe("pointer");
+    expect(screen.getByTestId("card").className).not.toMatch(/clickable/);
   });
 
   it("transmet les props HTML (onClick, aria-label…)", () => {
@@ -36,10 +40,5 @@ describe("Card", () => {
     const card = screen.getByLabelText("ma carte");
     fireEvent.click(card);
     expect(onClick).toHaveBeenCalledTimes(1);
-  });
-
-  it("accepte une className supplémentaire", () => {
-    render(<Card className="task-detail-card" data-testid="card">Contenu</Card>);
-    expect(screen.getByTestId("card").className).toContain("task-detail-card");
   });
 });

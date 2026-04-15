@@ -1,6 +1,7 @@
 import AssigneeSelector from "./AssigneeSelector";
 import { STATUS_LABELS, STATUS_BADGE_CLASS, PRIORITY_LABELS } from "@/lib/utils";
 import type { TaskStatus, TaskPriority, ProjectMember } from "@/types";
+import styles from "./TaskForm.module.css";
 
 interface TaskFormProps {
   title: string; setTitle: (v: string) => void;
@@ -34,25 +35,36 @@ export default function TaskForm({
       <div className="form-group">
         <label className="form-label">Priorité</label>
         <div className="status-picker">
-          {(["LOW","MEDIUM","HIGH","URGENT"] as TaskPriority[]).map((p) => (
-            <span key={p}
-              className={`badge badge--selectable ${priority === p ? "active" : ""}`}
-              style={{ background: priority === p ? "#F3F4F6" : "#fff", border: "1px solid #E8EAED" }}
-              onClick={() => setPriority(p)} role="radio" aria-checked={priority === p} tabIndex={0}
+          {(["LOW", "MEDIUM", "HIGH", "URGENT"] as TaskPriority[]).map((p) => (
+            <span
+              key={p}
+              className={`badge badge--selectable ${styles.pickerItem} ${priority === p ? styles["pickerItem--active"] : ""}`}
+              onClick={() => setPriority(p)}
+              role="radio"
+              aria-checked={priority === p}
+              tabIndex={0}
               onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setPriority(p); }}
-            >{PRIORITY_LABELS[p]}</span>
+            >
+              {PRIORITY_LABELS[p]}
+            </span>
           ))}
         </div>
       </div>
       <div className="form-group">
         <label className="form-label">Statut</label>
         <div className="status-picker">
-          {(["TODO","IN_PROGRESS","DONE"] as TaskStatus[]).map((s) => (
-            <span key={s}
-              className={`badge ${STATUS_BADGE_CLASS[s]} badge--selectable ${status === s ? "active" : ""}`}
-              onClick={() => setStatus(s)} role="radio" aria-checked={status === s} tabIndex={0}
+          {(["TODO", "IN_PROGRESS", "DONE"] as TaskStatus[]).map((s) => (
+            <span
+              key={s}
+              className={`badge ${STATUS_BADGE_CLASS[s]} badge--selectable`}
+              onClick={() => setStatus(s)}
+              role="radio"
+              aria-checked={status === s}
+              tabIndex={0}
               onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setStatus(s); }}
-            >{STATUS_LABELS[s]}</span>
+            >
+              {STATUS_LABELS[s]}
+            </span>
           ))}
         </div>
       </div>

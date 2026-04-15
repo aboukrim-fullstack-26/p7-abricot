@@ -47,7 +47,7 @@ export default function Header() {
   return (
     <nav className="navbar" role="navigation" aria-label="Navigation principale">
       <div className="navbar__left">
-        <Link href="/dashboard" aria-label="Accueil Abricot" style={{ display: "inline-flex", alignItems: "center" }}>
+        <Link href="/dashboard" aria-label="Accueil Abricot" className="navbar__logo-link">
           <Logo variant="top" width={120} />
         </Link>
       </div>

@@ -7,6 +7,7 @@ import CreateProjectModal from "@/components/projects/CreateProjectModal";
 import { useAuth } from "@/context/auth-context";
 import { useAssignedTasks, useProjectsWithTasks } from "@/hooks/use-queries";
 import { formatDate, STATUS_LABELS, STATUS_BADGE_CLASS } from "@/lib/utils";
+import styles from "./page.module.css";
 
 type ViewMode = "kanban" | "list" | "projects";
 
@@ -44,7 +45,9 @@ export default function DashboardPage() {
           </div>
           <div className="page-header__actions">
             <button className="btn btn--primary btn--icon" onClick={() => setShowCreateProject(true)}>
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
               Créer un projet
             </button>
           </div>
@@ -52,12 +55,16 @@ export default function DashboardPage() {
 
         <div className="view-toggle" role="tablist" aria-label="Choisir la vue">
           {(["list", "kanban", "projects"] as ViewMode[]).map((v) => (
-            <button key={v} role="tab" aria-selected={view === v}
+            <button
+              key={v}
+              role="tab"
+              aria-selected={view === v}
               className={`view-toggle__btn ${view === v ? "view-toggle__btn--active" : ""}`}
-              onClick={() => setView(v)}>
-              {v === "list" && <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="6.25" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="10.5" width="12" height="1.5" rx="0.75" fill="currentColor"/></svg>}
-              {v === "kanban" && <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="5.25" y="1" width="3.5" height="8" rx="1" fill="currentColor"/><rect x="9.5" y="1" width="3.5" height="10" rx="1" fill="currentColor"/></svg>}
-              {v === "projects" && <svg viewBox="0 0 16 16" fill="none"><path d="M1 4a1 1 0 011-1h4l1.5 2H14a1 1 0 011 1v7a1 1 0 01-1 1H2a1 1 0 01-1-1V4z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/></svg>}
+              onClick={() => setView(v)}
+            >
+              {v === "list" && <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1" y="2" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="6.25" width="12" height="1.5" rx="0.75" fill="currentColor"/><rect x="1" y="10.5" width="12" height="1.5" rx="0.75" fill="currentColor"/></svg>}
+              {v === "kanban" && <svg viewBox="0 0 14 14" fill="none" aria-hidden="true"><rect x="1" y="1" width="3.5" height="12" rx="1" fill="currentColor"/><rect x="5.25" y="1" width="3.5" height="8" rx="1" fill="currentColor"/><rect x="9.5" y="1" width="3.5" height="10" rx="1" fill="currentColor"/></svg>}
+              {v === "projects" && <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M1 4a1 1 0 011-1h4l1.5 2H14a1 1 0 011 1v7a1 1 0 01-1 1H2a1 1 0 01-1-1V4z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/></svg>}
               {v === "list" ? "Liste" : v === "kanban" ? "Kanban" : "Projets"}
             </button>
           ))}
@@ -78,7 +85,9 @@ export default function DashboardPage() {
                       <span className="kanban-column__count">{col.items.length}</span>
                     </div>
                     <div className="kanban-column__cards">
-                      {col.items.length === 0 && <p style={{ color: "#9CA3AF", fontSize: 12, padding: "12px 0" }}>Aucune tâche</p>}
+                      {col.items.length === 0 && (
+                        <p className={styles.emptyColumn}>Aucune tâche</p>
+                      )}
                       {col.items.map((task) => (
                         <div className="task-card" key={task.id}>
                           <div className="task-card__header">
@@ -89,19 +98,19 @@ export default function DashboardPage() {
                           <div className="task-card__meta">
                             {task.project && (
                               <span className="task-card__meta-item">
-                                <svg viewBox="0 0 12 12" fill="none"><path d="M1 3a1 1 0 011-1h2.5l1 1.5H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
+                                <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1 3a1 1 0 011-1h2.5l1 1.5H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
                                 {task.project.name}
                               </span>
                             )}
                             {task.dueDate && (
                               <span className="task-card__meta-item">
-                                <svg viewBox="0 0 12 12" fill="none"><rect x="1.5" y="2" width="9" height="9" rx="1" stroke="currentColor" strokeWidth="1.2"/><path d="M4 1v2M8 1v2M1.5 5h9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
+                                <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><rect x="1.5" y="2" width="9" height="9" rx="1" stroke="currentColor" strokeWidth="1.2"/><path d="M4 1v2M8 1v2M1.5 5h9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
                                 {formatDate(task.dueDate)}
                               </span>
                             )}
                             {task.comments && task.comments.length > 0 && (
                               <span className="task-card__meta-item">
-                                <svg viewBox="0 0 12 12" fill="none"><path d="M10.5 6c0 2.485-2.015 4.5-4.5 4.5a4.48 4.48 0 01-2.25-.606L1.5 10.5l.606-2.25A4.48 4.48 0 011.5 6C1.5 3.515 3.515 1.5 6 1.5S10.5 3.515 10.5 6z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
+                                <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M10.5 6c0 2.485-2.015 4.5-4.5 4.5a4.48 4.48 0 01-2.25-.606L1.5 10.5l.606-2.25A4.48 4.48 0 011.5 6C1.5 3.515 3.515 1.5 6 1.5S10.5 3.515 10.5 6z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
                                 {task.comments.length}
                               </span>
                             )}
@@ -125,26 +134,46 @@ export default function DashboardPage() {
                     <p className="list-container__subtitle">Par ordre de priorité</p>
                   </div>
                   <div className="search-field">
-                    <input type="text" className="search-field__input" placeholder="Rechercher une tâche"
-                      value={search} onChange={(e) => setSearch(e.target.value)} aria-label="Rechercher une tâche" />
-                    <span className="search-field__icon"><svg viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.5"/><path d="M9.5 9.5L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg></span>
+                    <input
+                      type="text"
+                      className="search-field__input"
+                      placeholder="Rechercher une tâche"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      aria-label="Rechercher une tâche"
+                    />
+                    <span className="search-field__icon" aria-hidden="true">
+                      <svg viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4" stroke="currentColor" strokeWidth="1.5"/><path d="M9.5 9.5L12 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                    </span>
                   </div>
                 </div>
                 <div className="list-container__list">
-                  {filteredTasks.length === 0 && <p style={{ color: "#9CA3AF", padding: 20 }}>Aucune tâche trouvée</p>}
+                  {filteredTasks.length === 0 && (
+                    <p className={styles.emptyList}>Aucune tâche trouvée</p>
+                  )}
                   {filteredTasks.map((task) => (
                     <div className="task-list-item" key={task.id}>
                       <div className="task-list-item__left">
                         <div className="task-list-item__title">{task.title}</div>
                         {task.description && <div className="task-list-item__desc">{task.description}</div>}
                         <div className="task-list-item__meta">
-                          {task.project && <span className="task-list-item__meta-item"><svg viewBox="0 0 12 12" fill="none"><path d="M1 3a1 1 0 011-1h2.5l1 1.5H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>{task.project.name}</span>}
-                          {task.dueDate && <span className="task-list-item__meta-item"><svg viewBox="0 0 12 12" fill="none"><rect x="1.5" y="2" width="9" height="9" rx="1" stroke="currentColor" strokeWidth="1.2"/><path d="M4 1v2M8 1v2M1.5 5h9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>{formatDate(task.dueDate)}</span>}
+                          {task.project && (
+                            <span className="task-list-item__meta-item">
+                              <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M1 3a1 1 0 011-1h2.5l1 1.5H10a1 1 0 011 1v5a1 1 0 01-1 1H2a1 1 0 01-1-1V3z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/></svg>
+                              {task.project.name}
+                            </span>
+                          )}
+                          {task.dueDate && (
+                            <span className="task-list-item__meta-item">
+                              <svg viewBox="0 0 12 12" fill="none" aria-hidden="true"><rect x="1.5" y="2" width="9" height="9" rx="1" stroke="currentColor" strokeWidth="1.2"/><path d="M4 1v2M8 1v2M1.5 5h9" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
+                              {formatDate(task.dueDate)}
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="task-list-item__right">
                         <span className={`badge ${STATUS_BADGE_CLASS[task.status]}`}>{STATUS_LABELS[task.status]}</span>
-                        <Link href={`/projects/${task.projectId}`} className="btn-voir" style={{ marginTop: 0 }}>Voir</Link>
+                        <Link href={`/projects/${task.projectId}`} className={`btn-voir ${styles.btnVoir}`}>Voir</Link>
                       </div>
                     </div>
                   ))}
@@ -161,7 +190,9 @@ export default function DashboardPage() {
                   </div>
                 </div>
                 <div className="list-container__list">
-                  {projects.length === 0 && <p style={{ color: "#9CA3AF", padding: 20 }}>Aucun projet trouvé</p>}
+                  {projects.length === 0 && (
+                    <p className={styles.emptyList}>Aucun projet trouvé</p>
+                  )}
                   {projects.map((p) => (
                     <div className="task-list-item" key={p.id}>
                       <div className="task-list-item__left">
@@ -173,7 +204,7 @@ export default function DashboardPage() {
                         </div>
                       </div>
                       <div className="task-list-item__right">
-                        <Link href={`/projects/${p.id}`} className="btn-voir" style={{ marginTop: 0 }}>Voir</Link>
+                        <Link href={`/projects/${p.id}`} className={`btn-voir ${styles.btnVoir}`}>Voir</Link>
                       </div>
                     </div>
                   ))}
@@ -184,7 +215,6 @@ export default function DashboardPage() {
         )}
       </main>
       <Footer />
-
       <CreateProjectModal isOpen={showCreateProject} onClose={() => setShowCreateProject(false)} />
     </>
   );

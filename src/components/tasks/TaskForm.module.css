@@ -1,0 +1,8 @@
+.pickerItem {
+  background: #fff;
+  border: 1px solid #E8EAED;
+}
+
+.pickerItem--active {
+  background: #F3F4F6;
+}
