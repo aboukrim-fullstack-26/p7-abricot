@@ -179,6 +179,8 @@ export async function getDashboardStats() {
 
 // Users search
 export async function searchUsers(query: string) {
-  const res = await request<{ users: User[] }>(`/users/search?q=${encodeURIComponent(query)}`);
+  //const res = await request<{ users: User[] }>(`/users/search?q=${encodeURIComponent(query)}`);
+  //Le backend reçoit bien la requête, mais req.query.query est undefined (puisque le front a envoyé ?q=...), donc il tombe dans la branche d'erreur L732-735 et répond 400.
+  const res = await request<{ users: User[] }>(`/users/search?query=${encodeURIComponent(query)}`);
   return res.data!.users;
 }

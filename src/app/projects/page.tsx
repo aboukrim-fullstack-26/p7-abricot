@@ -28,7 +28,7 @@ export default function ProjectsPage() {
           <div className="page-header__actions">
             <Button
               variant="primary"
-              icon={<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>}
+              icon={<svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M7 1v12M1 7h12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>}
               onClick={() => setShowModal(true)}
             >
               Créer un projet
